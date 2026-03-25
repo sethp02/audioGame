@@ -1,0 +1,67 @@
+#include "craftingMaterial.nvgt"
+#include "treeClass.nvgt"
+#include "enemy.nvgt"
+#include "speech.nvgt"
+#include "playerClass.nvgt"
+#include "rect.nvgt"
+#include "speech.nvgt"
+class Map{
+Rect rect(0,0,1000,1000);
+Tree tree;
+Enemy enemy;
+Player player;
+Map(){
+
+}
+}
+void main(){
+    Map map;
+    
+    show_window("test");        
+    
+    while(true){        
+        wait(50);
+
+         map.tree.tree_collision(map.player);            
+         map.player.player_update();
+        if(map.player.tree_zone==true&&key_pressed(KEY_RCTRL)){
+        map.tree.gather_branches(map.player);
+    if(map.player.axe_in_hand==true&&map.tree.tree_fallen==true){
+        map.tree.gather_wood(map.player);
+    }
+else if(map.tree.tree_fallen==false&&map.player.axe_in_hand==true){
+    map.tree.chop_tree(map.player);
+}
+}
+         
+    if(key_pressed(KEY_SPACE)){
+    map.player.jump();
+}
+if(key_down(KEY_LEFT)){
+        map.player.move_backwords();    
+}
+if(key_down(KEY_LSHIFT)&&key_down(KEY_RIGHT)){
+    map.player.sprint();
+}
+        
+if(key_down(KEY_RIGHT)){
+    map.player.move_forword();
+}
+if(key_pressed(KEY_C)){
+ speak("your x coords are "+map.player.rect.x_coords+"your y coords are"+map.player.rect.y_coords + map.player.rect.collide_rect(map.tree.rect));
+}
+if(key_pressed(KEY_H)){
+    speak(map.player.health);
+}
+if(key_pressed(KEY_I)){
+    map.player.menu.inventoryMenu();
+}
+if(key_pressed(KEY_1)){
+    map.player.get_axe();
+}
+if(key_pressed(KEY_E)){
+    map.player.empty_hands=true;
+    map.player.axe_in_hand=false;
+}
+}
+}

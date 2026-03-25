@@ -1,0 +1,43 @@
+
+#include "speech.nvgt"
+#include "rect.nvgt"
+class Arrow{
+bool has_finished;
+    bool direction;
+    Rect rect(0,0,2,1);
+    int speed;
+    int  damage;
+    int end_x_position;
+    Arrow(int damage,Rect& player,int range,bool direction){
+this.damage=damage;
+has_finished=false;
+speed=1;
+this.direction=direction;
+
+rect.set_center(player.get_center());
+float[] center=rect.get_center()    ;
+if(direction==true){
+    end_x_position=center[0]+range;
+}
+else{
+ end_x_position=center[0]-range;   
+}
+}
+void update(){
+    
+    if(direction==false){
+        rect.x_coords-=speed;
+    }
+    else{
+    rect.x_coords+=speed;
+}
+if(direction==true&&rect.x_coords+rect.width>=end_x_position){
+speak("has gon right");
+has_finished=true;
+}
+else if(direction==false&&rect.x_coords<=end_x_position){
+ speak("has gon left");   
+has_finished=true;
+}
+}
+}

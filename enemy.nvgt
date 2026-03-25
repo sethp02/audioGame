@@ -1,0 +1,93 @@
+#include "rect.nvgt"
+class Enemy{
+    Rect rect(60,0,2,5);
+    sound shot;
+    bool is_dead;
+    bool seen;
+    int enemy_health;
+int enemy_damage;
+Rect line_of_sight(0,0,30,0);
+string enemy_name;
+sound step;
+sound enemy_grone;
+sound death;
+int enemy_grone_timer;
+Enemy(){
+seen=false;
+    line_of_sight.set_center(rect.get_center());
+    enemy_health=100;
+death.load("sounds/enemy/enemyDeath.wav");
+    enemy_damage=10;
+enemy_name="zombie";
+// enemy_grone_timer=random(500,15000);
+enemy_grone_timer=0;
+step.load("sounds/enemy/step.wav");
+enemy_grone.load("sounds/enemy/grone.wav");
+shot.load("sounds/enemy/shot.wav");
+}
+void update(Rect@ player){
+if(is_dead==true){
+    return;
+}
+    movement(player);
+    position_sound(enemy_grone,player);    
+    position_sound(step,player);
+    if(enemy_grone_timer>=0){
+    enemy_grone_timer-=50;
+}
+    if(enemy_grone_timer<=0){
+    if(enemy_grone.playing==false)   {
+enemy_grone.play();
+// enemy_grone_timer=random(500,15000);
+}
+}
+}
+void check_collision(Player& class_player){
+if(is_dead==true){
+    return;
+}
+    if(line_of_sight.collide_rect(class_player.rect)==true){
+seen=true;
+attack(class_player);
+}
+else{
+    seen=false;
+}
+if(class_player.bow.arrow!=null&&rect.collide_rect(class_player.bow.arrow.rect)&&shot.playing==false){
+position_sound(shot,class_player.rect);
+    shot.play();
+enemy_health-=class_player.bow.arrow.damage;
+if(enemy_health<=0){
+    position_sound(death,class_player.rect);
+    death.play();
+    is_dead=true;
+step.stop();
+enemy_grone.stop();
+}
+    @class_player.bow.arrow=null;
+}
+}
+void movement(Rect& player){
+    if(seen==false){    
+    return;
+}
+    if(player.x_coords>rect.x_coords&&step.playing==false){
+    step.play();
+    rect.x_coords+=1;
+line_of_sight.set_center(rect.get_center());
+}
+else if(player.x_coords<rect.x_coords&&step.playing==false){
+    step.play();
+    rect.x_coords-=1;
+line_of_sight.set_center(rect.get_center());
+}
+}
+void position_sound(sound& class_sound,Rect& player){
+    class_sound.set_position_3d(rect.x_coords-player.x_coords,rect.y_coords-player.y_coords,0);
+}
+void attack(Player& class_player){
+    if(class_player.rect.collide_rect(rect)==true){
+        class_player.damage_taken(enemy_damage);    
+    }
+}
+}

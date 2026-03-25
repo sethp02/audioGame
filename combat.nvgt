@@ -1,0 +1,126 @@
+#include "enemy.nvgt"
+
+#include "gunClass.nvgt"
+int handle_hit(int gun_damage,int enemy_health,int part){
+    int roll=random(0,100);
+int hit_chance=0;
+if(part==0){
+    hit_chance=25;    
+if(roll<=hit_chance){
+    enemy_health-=gun_damage*5;
+    speak("hit");
+}
+else{
+    speak("missed");
+}
+}
+else if(part==1){
+    hit_chance=75;
+if(roll<=hit_chance){
+    enemy_health-=gun_damage;
+    speak("hit");
+}
+else{
+    speak("missed");
+}    
+}
+else if(part==2){
+    hit_chance=50;
+if(roll<=hit_chance){
+    enemy_health-=gun_damage;
+    speak("hit");
+}
+else{
+    speak("missed");
+}
+}
+
+return enemy_health;
+}
+void combat(string enemy_name,int enemy_health){
+Enemy enemy(enemy_name,enemy_health);    
+sound     draw_pistol;
+draw_pistol.load("sounds/pistol/Draw.wav");    
+    Gun gun1("Pistol", "9mm", 15,10);
+    show_window("test");
+    bool gun_in_hand=false;
+    int selected=0;    
+int last_selected=-1;
+while(true){ 
+    wait(50);
+    gun1.shoot_counter();
+    enemy.movement_check();
+    if(enemy_health<=0){        
+break;
+        
+        alert("",enemy_name+"down");        
+    exit();
+    }
+    if(key_pressed(KEY_ESCAPE)){
+exit();
+}    
+    if(key_down(KEY_SPACE) &&gun_in_hand==true){
+        bool shot=gun1.shoot();
+    if(shot==true)    {
+int damage_dealt=handle_hit(gun1.damage,enemy_health,selected);
+if(damage_dealt!=enemy_health){
+    enemy.just_hit=true;
+}
+enemy_health=damage_dealt;
+
+}
+    }        
+    if(key_pressed(KEY_A)){
+    speak(gun1.ammoCount);
+}
+if(key_down(KEY_LSHIFT)&&key_pressed(KEY_R)&&gun_in_hand==true&&gun1.ammoCount>0){
+gun1.unload();
+}
+else if(key_pressed(KEY_R)&&gun_in_hand==true){
+    gun1.reload();
+}
+if(key_pressed(KEY_1)&&gun_in_hand==false){
+    speak("Gun drawn");
+gun_in_hand=true;
+    
+    draw_pistol.play();
+}
+else if(key_pressed(KEY_H)&&gun_in_hand==true){
+gun_in_hand=false;
+speak("using hands");    
+}    
+    if(key_pressed(KEY_UP)) {
+selected--;
+    }
+if(key_pressed(KEY_DOWN)){
+    selected++;
+}
+if(selected<0){
+    selected=0;
+}
+if(selected>2){
+    selected=2;
+}
+        if (selected != last_selected) {
+            if (selected == 0){
+                speak("head"); 
+            } 
+            if (selected == 1){
+                 speak("body");
+            }
+                 if (selected == 2){
+                     speak("legs");
+                    }    
+                    last_selected=selected;    
+    }    
+        if(key_pressed(KEY_D)){
+            speak(enemy_health);
+        }                
+    
+}    
+        enemy.enemy_death.play();
+wait(500);
+    }
+void main(){
+    combat("zomby",100);
+}

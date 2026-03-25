@@ -1,0 +1,69 @@
+
+#include "craftingMaterial.nvgt"
+#include "rect.nvgt"
+class Tree{
+    
+    Rect rect(10,0,3,10);    
+    bool tree_fallen;
+    bool interacting;
+    int wood;
+    int branches;
+    int leaves;
+    int health;
+    sound branch_breaking;    
+    sound chop_wood;
+sound leaf_break;    
+sound tree_falling;
+Tree(){
+        wood=25;
+        health=100;
+        branches=30;
+        leaves=50;    
+branch_breaking.load("sounds/tree/branchBreaking.wav")    ;
+chop_wood.load("sounds/tree/chopWood.wav");
+leaf_break.load("sounds/tree/leafBreak.wav");
+tree_falling.load("sounds/tree/treeFalling.wav");
+tree_fallen=false;
+interacting=false;
+}
+void tree_collision(Player&player){
+if(rect.collide_rect(player.rect)){
+player.tree_zone=true;
+}
+else{
+    player.tree_zone=false;
+}
+}
+void gather_branches(Player& player){
+if(branch_breaking.playing==false&&player.empty_hands==true&&branches>0&&tree_fallen==false){
+    branch_breaking.play();
+CraftingMaterial branch("branch",1);
+CraftingMaterial leaf("leaves",5);
+player.add_inventory(branch);
+player.add_inventory(leaf);
+branches-=1;
+
+}
+ 
+
+}
+void gather_wood(Player@ player){
+if(tree_falling.playing==false&&chop_wood.playing==false&&wood>0&&tree_fallen==true&&player.axe_in_hand==true){
+    chop_wood.play();
+CraftingMaterial g_wood("wood",1);
+player.add_inventory(g_wood);
+wood-=1;
+}
+}
+void chop_tree(Player@ player){
+ if(player.axe_in_hand==true&&player.chop_axe.playing==false&&health>0){
+    player.chop_axe.play();
+    health-=5;
+if(health<=0) {
+    tree_falling.play();
+health=0;
+tree_fallen=true;
+}
+}
+}
+}

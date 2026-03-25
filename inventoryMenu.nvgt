@@ -1,0 +1,86 @@
+#include "CraftingMaterial.nvgt"
+#include "playerClass.nvgt"
+#include "speech.nvgt"
+
+class InventoryMenu{
+
+    IInventoryItem@[]@ list;
+    string[] tabs;
+int list_index;
+int tabs_index;
+    dictionary@ inventory;
+InventoryMenu(dictionary@ inventory){
+@this.inventory=@inventory;
+tabs_index=0;
+create_tabs();
+list_index=0;
+}
+void create_tabs(){
+     tabs=inventory.get_keys();
+    }
+void tab_move_forwards(){
+ list_index=0;
+    tabs_index+=1;
+if(tabs_index>=tabs.size()){
+    tabs_index-=1;
+}
+ speak(tabs[tabs_index]);
+}
+void tab_move_backwards(){
+    list_index=0;
+    tabs_index-=1;
+    if(tabs_index<0){
+        tabs_index=0;
+    }
+    
+    speak(tabs[tabs_index]);
+}
+void list_move_backwards(){
+    list_index-=1;
+    dictionaryValue value=inventory[tabs[tabs_index]];
+    @list=cast<IInventoryItem@[]@>(value);
+
+    if(list_index<0){
+        list_index+=1;
+    }
+if(list.size()==0){
+
+    return;
+}
+speak(list[list_index].get_string());
+}
+void list_move_forwards(){
+    list_index+=1;    
+    dictionaryValue value;
+    value=inventory[tabs[tabs_index]];
+    @list = cast<IInventoryItem@[]@>(value);
+if(list_index>=list.size()){
+    list_index-=1;
+}
+
+if(list.size()==0){
+    return;
+}
+speak(list[list_index].get_string());
+}
+void inventoryMenu(){
+while(true){
+    wait(50);
+    if(key_pressed(KEY_RIGHT)){
+        tab_move_forwards();
+    }
+    if(key_pressed(KEY_LEFT)){
+        tab_move_backwards();
+    }
+    if(key_pressed(KEY_DOWN)){
+        list_move_forwards();
+    }
+if(key_pressed(KEY_UP)){
+    list_move_backwards();    
+}
+if(key_pressed(KEY_ESCAPE)){
+    break;
+}
+}
+}
+}

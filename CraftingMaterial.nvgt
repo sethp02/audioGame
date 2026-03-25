@@ -1,0 +1,21 @@
+#include "inventoryInterface.nvgt"
+class CraftingMaterial:IInventoryItem{
+    string name;
+    int quantity;
+CraftingMaterial(string name, int quantity){
+    this.name=name;
+    this.quantity=quantity; 
+}
+string get_string(){
+    return string(quantity+name);
+}
+string getName(){
+    return name;
+}
+int getQuantity(){
+    return quantity;
+}
+void setQuantity(int q){
+    quantity=q;
+}
+}

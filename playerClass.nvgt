@@ -1,0 +1,207 @@
+#include "junkClass.nvgt"
+#include "inventoryMenu.nvgt"
+#include "inventoryInterface.nvgt"
+#include "foodClass.nvgt"
+#include "bowClass.nvgt"
+#include "./CraftingMaterial.nvgt"
+#include "rect.nvgt"
+#include "speech.nvgt"
+class Player{
+    
+    
+    InventoryMenu@ menu;
+    bool axe_in_hand;
+    bool empty_hands;
+    bool tree_zone;
+    Bow bow;
+    bool direction;
+    bool is_sprinting;
+    bool is_falling;
+    bool is_jumping;
+    sound draw_axe;
+    sound tree_step_sound;
+    sound death;
+    sound hit;
+    sound chop_axe;
+    sound running;
+    sound jumping;
+    sound step;
+    string name;
+    int health;
+int temperature;
+int hunger;
+int thirst;
+dictionary inventory;
+Rect rect(0,0,2,4);
+Player(){
+health=100;
+thirst=100;
+hunger=100;
+temperature=0;
+IInventoryItem@[] junk;
+IInventoryItem@[] food;
+IInventoryItem@[] craftingMaterial;
+@inventory["crafting"]=craftingMaterial;
+@inventory["food"]=food;
+@inventory["junk"]=junk;
+InventoryMenu menu(inventory);
+@this.menu=@menu;
+
+draw_axe.load("sounds/axe/draw.wav");
+tree_step_sound.load("sounds/tree/treeSound.wav");
+chop_axe.load("sounds/axe/chop.wav");
+step.load("sounds/player/step.wav");
+tree_zone=false;
+is_sprinting=false;
+empty_hands=true;
+axe_in_hand=false;
+is_falling=false;
+running.load("sounds/player/running.wav");
+jumping.load("sounds/player/jump.wav");
+is_jumping=false;
+hit.load("sounds/player/hit.wav");
+death.load("sounds/player/death.wav");
+direction=false;
+}
+void set_player_name(string name){
+    this.name=name;
+}    
+void move_forword(){
+    direction=true;
+    if(step.playing==false&&rect.x_coords<1000&&running.playing==false&&tree_step_sound.playing==false){        
+rect.x_coords+=1;
+if(is_sprinting==true){
+    running.play();
+
+}
+else  if(tree_zone==true){
+    step.stop();    
+    tree_step_sound.play();
+}
+
+else{
+    step.play();    
+}
+
+if(rect.x_coords>1000){
+    rect.x_coords=1000;
+}
+}
+}    
+
+void move_backwords(){
+
+    direction=false;
+    if(step.playing==false&&rect.x_coords>0&&running.playing==false&&tree_step_sound.playing==false){
+if(is_sprinting==true){
+    running.play();    
+
+}
+else if(tree_zone==true){
+    step.stop();    
+    tree_step_sound.play();
+}
+else{
+    step.play();    
+}
+rect.x_coords-=1;
+if(rect.x_coords<0){
+rect.x_coords=0;
+
+}
+}    
+}
+void sprint(){
+    is_sprinting=true;
+}
+void jump(){
+if (is_jumping || is_falling) {
+    return;
+}
+jumping.play();
+is_jumping=true;
+}
+void player_update(){    
+    if(is_jumping==true){        
+        step.set_volume(-100);
+        running.set_volume(-100);
+        rect.y_coords+=.5;
+if(rect.y_coords==5&&is_falling==false){
+    is_jumping=false;
+    is_falling=true;    
+}
+    }
+if(is_falling==true){
+    rect.y_coords-=.5;
+    if(rect.y_coords<=0){
+    is_falling=false;    
+    rect.y_coords=0;
+step.set_volume(0);
+running.set_volume(0);
+
+}    
+}
+is_sprinting=false;
+}
+void dead(){
+    if(health<=0&&death.playing==false){
+        death.play();
+    alert("","you died");
+    }
+}
+void damage_taken(int damage_taken){
+    
+    if(hit.playing==false){
+        health-=damage_taken;
+        hit.play();
+    }
+dead();
+}
+void add_inventory(Food@food){
+    IInventoryItem@[]@ foodList=cast<IInventoryItem@[]@>(inventory["food"]);
+bool foundItem=false;
+for(int i=0;i<foodList.size();i++){
+if(food.getName()==foodList[i].getName()){
+    foodList[i].setQuantity(food.getQuantity()+foodList[i].getQuantity());
+    foundItem=true;
+    }
+}
+if(foundItem==false){
+foodList.push_back(food);
+}
+}
+void add_inventory(CraftingMaterial@ craftingMaterial){
+    IInventoryItem@[]@ craftingMaterialsList = cast<IInventoryItem@[]@>(inventory["crafting"]);
+bool foundItem=false;
+for(int i=0;i<craftingMaterialsList.size();i++){
+if(craftingMaterial.getName()==craftingMaterialsList[i].getName()){
+    craftingMaterialsList[i].setQuantity(craftingMaterial.getQuantity()+craftingMaterialsList[i].getQuantity());
+foundItem=true;
+}
+}
+if(foundItem==false){
+    craftingMaterialsList.push_back(craftingMaterial);
+}
+}
+void add_inventory(Junk@ junk){
+    IInventoryItem@[]@ junkList = cast<IInventoryItem@[]@>(inventory["crafting"]);
+bool foundItem=false;
+for(int i=0;i<junkList.size();i++){
+if(junk.getName()==junkList[i].getName()){
+    junkList[i].setQuantity(junk.getQuantity()+junkList[i].getQuantity());
+foundItem=true;
+}
+}
+if(foundItem==false){
+    junkList.push_back(junk);
+}
+}
+
+void get_axe(){
+    if(draw_axe.playing==false&&axe_in_hand==false){
+draw_axe.play();
+axe_in_hand=true;
+empty_hands=false;
+}
+}
+}

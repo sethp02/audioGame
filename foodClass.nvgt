@@ -1,0 +1,29 @@
+#include "inventoryInterface.nvgt"
+#include "playerClass.nvgt"
+class Food:IInventoryItem{
+    int fullness;
+    int thirst;
+    string name;
+    int quantity;
+    bool cooked;
+    Food(string name,int quantity, int fullness=0,int thirst=0){
+        this.name=name;
+this.fullness=fullness;
+this.thirst=thirst;
+this.quantity=quantity;    
+}
+
+string get_string(){
+ return string(quantity+name)   ;
+
+}
+string getName(){
+    return name;
+}
+int getQuantity(){
+    return quantity;
+}
+void setQuantity(int q){
+quantity=q;
+}
+}

@@ -1,0 +1,70 @@
+
+#include "arrowClass.nvgt"
+
+class Bow{
+sound empty;
+    bool is_drawn;
+    bool direction;
+    int range;
+    int knocked;
+Arrow@ arrow;
+    sound fire;
+sound draw;
+sound load;    
+    int ammo;
+int damage;
+
+Bow(){
+
+    empty.load("sounds/bow/empty.wav");
+    knocked=0;
+    ammo=10;
+is_drawn=false;
+    damage=20;
+range=20;
+fire.load("sounds/bow/fire.wav");
+draw.load("sounds/bow/draw.wav");
+load.load("sounds/bow/load.wav");
+}
+void load_bow(){
+if(knocked>=3){
+    return;
+}
+if(load.playing==false&&is_drawn==true){
+    load.play();
+    knocked+=1;
+}
+}
+void draw_bow(){
+    is_drawn=true;
+    draw.play();    
+    knocked=0;
+}
+void fire_bow(Player@ class_player){    
+    if(fire.playing==false&&is_drawn==true&&knocked>0){
+        fire.play();
+    Arrow arrow_object(damage,class_player.rect,range,class_player.direction);
+    @arrow=@arrow_object;
+        
+    ammo-=knocked;
+    knocked=0;    
+}
+else if(knocked==0){
+    empty_bow();
+}
+}
+void empty_bow(){
+    if(knocked==0&&empty.playing==false&&is_drawn==true){
+        empty.play();
+    }
+}
+void update(){
+    if (arrow != null) {
+        arrow.update();
+        if(arrow.has_finished==true){
+            @arrow=null;
+        }
+    }
+}
+}
+

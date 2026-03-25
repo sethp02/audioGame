@@ -1,0 +1,6 @@
+interface IInventoryItem{
+    string getName();
+int getQuantity();
+void setQuantity(int q);
+string get_string();
+}

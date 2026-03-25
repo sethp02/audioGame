@@ -1,0 +1,58 @@
+#include "speech.nvgt"
+class Gun{
+    string ammoType;
+    int ammoCount;
+    int mag_size;
+    string gunName;
+int damage;
+int timer;    
+sound reloading;
+sound unload_pistol;    
+sound shoot_pistol;
+sound empty;
+    
+Gun(string name, string type, int count,int damage){
+    gunName = name;
+    ammoType = type;
+    ammoCount =count;
+mag_size=count;
+    this.damage=damage;
+timer=500;
+    reloading.load("sounds/pistol/Reloading.wav");    
+    unload_pistol.load("sounds/pistol/Unload.wav");
+shoot_pistol.load("sounds/pistol/Fire.wav");
+empty.load("sounds/pistol/Empty.wav");    
+
+}
+void reload(){
+    if(ammoCount<mag_size){
+reloading.play();        
+ammoCount=mag_size;
+    }
+    
+}
+void unload(){
+    unload_pistol.play();
+    ammoCount=0;
+}
+bool shoot(){
+if(ammoCount>0&&timer<=0&&reloading.get_playing()==false){
+shoot_pistol.stop();
+    shoot_pistol.play();
+    ammoCount--;
+timer=500;
+return true;
+}
+ if(ammoCount<=0&&timer<=0){
+    empty.stop();
+    empty.play();    
+timer=500;
+}
+return false;
+}
+void shoot_counter(){    
+    if(timer>=0){
+timer-=50;
+    }
+}
+}
