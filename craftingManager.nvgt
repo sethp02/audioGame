@@ -1,2 +1,6 @@
+
 #include "CraftingMaterials.nvgt"
 #include "foodClass.nvgt"
+class CraftingManager{
+
+}

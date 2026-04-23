@@ -1,0 +1,50 @@
+#include "speech.nvgt"
+#include "foodClass.nvgt"
+#include "inventoryInterface.nvgt"
+#include "craftingMaterial.nvgt"
+class Recipe{
+CraftingMaterial@[] craftingMaterialsList;
+IInventoryItem@ createdItem;
+Recipe(CraftingMaterial@[] craftingMaterialsList,IInventoryItem@ item){
+this.craftingMaterialsList=craftingMaterialsList;
+@createdItem=@item;
+
+}
+bool canCraft(IInventoryItem@[]@ selectedMaterials){
+
+    for(int i=0;i<craftingMaterialsList.size();i++){
+    CraftingMaterial@ currentMaterial=craftingMaterialsList[i];
+    bool foundMaterial=false;
+    for(int x=0;x<selectedMaterials.size();x++){
+        if(currentMaterial.getName()==selectedMaterials[x].getName()){
+foundMaterial=true;
+        break;
+        }
+    }
+    if(foundMaterial==false){
+        return false;
+    }
+    }
+return true;
+}
+string getName(){
+    return createdItem.get_string();
+}
+}
+
+void main(){
+    CraftingMaterial@[] list;
+    CraftingMaterial rawChicken("raw chicken",1);
+    CraftingMaterial salt("salt",1);
+    list.push_back(rawChicken);
+    list.push_back(salt);
+    Food cookedChicken("cooked chicken",1);
+    IInventoryItem@[] itemsList;
+    CraftingMaterial chicken("chicken",1);
+    CraftingMaterial pork("pork",1);
+    itemsList.push_back(chicken);
+    itemsList.push_back(pork);
+    
+    Recipe food(list,cookedChicken);
+speak(food.canCraft(itemsList));
+}

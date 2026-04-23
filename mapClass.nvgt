@@ -54,7 +54,7 @@ if(key_pressed(KEY_H)){
     speak(map.player.health);
 }
 if(key_pressed(KEY_I)){
-    map.player.menu.inventoryMenu();
+    map.player.menu.inventoryMenu(map.player);
 }
 if(key_pressed(KEY_1)){
     map.player.get_axe();

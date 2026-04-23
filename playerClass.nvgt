@@ -1,3 +1,4 @@
+#include "toolsClass.nvgt"
 #include "junkClass.nvgt"
 #include "inventoryMenu.nvgt"
 #include "inventoryInterface.nvgt"
@@ -7,8 +8,7 @@
 #include "rect.nvgt"
 #include "speech.nvgt"
 class Player{
-    
-    
+    IInventoryItem@[] selectedItemList;
     InventoryMenu@ menu;
     bool axe_in_hand;
     bool empty_hands;
@@ -41,9 +41,11 @@ temperature=0;
 IInventoryItem@[] junk;
 IInventoryItem@[] food;
 IInventoryItem@[] craftingMaterial;
+IInventoryItem@[] tools;
 @inventory["crafting"]=craftingMaterial;
 @inventory["food"]=food;
 @inventory["junk"]=junk;
+@inventory["tools"]=tools;
 InventoryMenu menu(inventory);
 @this.menu=@menu;
 
@@ -62,6 +64,7 @@ is_jumping=false;
 hit.load("sounds/player/hit.wav");
 death.load("sounds/player/death.wav");
 direction=false;
+
 }
 void set_player_name(string name){
     this.name=name;

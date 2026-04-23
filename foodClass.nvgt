@@ -1,5 +1,4 @@
 #include "inventoryInterface.nvgt"
-#include "playerClass.nvgt"
 class Food:IInventoryItem{
     int fullness;
     int thirst;

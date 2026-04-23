@@ -35,7 +35,7 @@ void tab_move_backwards(){
     
     speak(tabs[tabs_index]);
 }
-void list_move_backwards(){
+void list_move_backwards(Player@ player){
     list_index-=1;
     dictionaryValue value=inventory[tabs[tabs_index]];
     @list=cast<IInventoryItem@[]@>(value);
@@ -47,9 +47,14 @@ if(list.size()==0){
 
     return;
 }
-speak(list[list_index].get_string());
+speak(list[list_index].get_string(),false);
+for(int i=0;i<player.selectedItemList.size();i++){
+    if(list[list_index].get_string()==player.selectedItemList[i].get_string()){
+        speak("checked",false);
+    }
 }
-void list_move_forwards(){
+}
+void list_move_forwards(Player@ player){
     list_index+=1;    
     dictionaryValue value;
     value=inventory[tabs[tabs_index]];
@@ -61,11 +66,39 @@ if(list_index>=list.size()){
 if(list.size()==0){
     return;
 }
-speak(list[list_index].get_string());
+speak(list[list_index].get_string(),false);
+for(int i=0;i<player.selectedItemList.size();i++){
+    if(list[list_index].get_string()==player.selectedItemList[i].get_string()){
+        speak("checked",false);
+    }
 }
-void inventoryMenu(){
-while(true){
+}
+
+void checkingItems(Player@ player){
+bool foundItem=false;
+    for(int i=0; i<player.selectedItemList.size();i++){
+    if(list[list_index].get_string()==player.selectedItemList[i].get_string()){
+        player.selectedItemList.remove_at(i);
+    speak("unchecked");
+foundItem=true;
+}
+}
+    if(foundItem==false){
+    
+player.selectedItemList.push_back(list[list_index]);
+speak("checked",false);
+}
+
+for(int i=0;i<player.selectedItemList.size();i++){
+    speak(player.selectedItemList[i].get_string(),false);
+}
+}
+void inventoryMenu(Player@player){
+    while(true){
     wait(50);
+    if(key_pressed(KEY_SPACE)){
+        checkingItems(player);
+    }
     if(key_pressed(KEY_RIGHT)){
         tab_move_forwards();
     }
@@ -73,10 +106,10 @@ while(true){
         tab_move_backwards();
     }
     if(key_pressed(KEY_DOWN)){
-        list_move_forwards();
+        list_move_forwards(player);
     }
 if(key_pressed(KEY_UP)){
-    list_move_backwards();    
+    list_move_backwards(player);    
 }
 if(key_pressed(KEY_ESCAPE)){
     break;
